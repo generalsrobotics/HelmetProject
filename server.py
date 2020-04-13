@@ -35,7 +35,7 @@ class UIHandler(SimpleHTTPRequestHandler):
                 return
        
 class Backend:
-    def __init__(self,wsPort=9001,httpPort=80):
+    def __init__(self,wsPort=9001,httpPort=8000):
         self.clients = []
         handler = ClientHandler
         handler.backend = self
@@ -91,8 +91,8 @@ if __name__ == "__main__":
     if backend.online():
         if detector.startStream():
             while True:
-                frame, depth = detector.getFrame()
-                backend.p[0].send(frame)
+                color_frame, depth_frame = detector.getFrame()
+                backend.p[0].send(color_frame)
             print("Stream stopped")
         else:
             print("Error loading realsense")

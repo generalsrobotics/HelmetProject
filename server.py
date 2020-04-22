@@ -1,4 +1,4 @@
-from SimpleWebSocketServer import SimpleSSLWebSocketServer, WebSocket
+from SimpleWebSocketServer import SimpleWebSocketServer, WebSocket
 from threading import Thread
 from multiprocessing import Process, Pipe
 import json
@@ -30,18 +30,14 @@ class ClientHandler(WebSocket):
        self.backend.clients.remove(self)
        print(self.address, 'closed')
 
-class UIHandler(SimpleHTTPRequestHandler):
-            def log_message(self, format, *args):
-                return
        
 class Backend:
     def __init__(self,wsPort=9001,httpPort=8000):
         self.clients = []
         handler = ClientHandler
         handler.backend = self
-        self.wsServer = SimpleSSLWebSocketServer("0.0.0.0", wsPort, handler, "cert.pem", "key.pem", ssl.PROTOCOL_TLSv1_2)
-        self.httpServer = socketserver.TCPServer(('0.0.0.0', httpPort), UIHandler)
-        self.httpServer.socket = ssl.wrap_socket(self.httpServer.socket, server_side=True, certfile='cert.pem', keyfile='key.pem', ssl_version=ssl.PROTOCOL_TLSv1_2)
+        self.wsServer = SimpleWebSocketServer("0.0.0.0", wsPort, handler)
+        self.httpServer = socketserver.TCPServer(('0.0.0.0', httpPort), SimpleHTTPRequestHandler)
         self.zone = 0
         self.p = Pipe()
 
@@ -59,7 +55,7 @@ class Backend:
 
     def sendFrame(self,frame):
         assert type(frame) is np.ndarray
-        packed = cv2.imencode(".jpeg",frame)[1]
+        packed = cv2.imencode(".jpeg",frame,(cv2.IMWRITE_JPEG_QUALITY, 100))[1]
         [client.sendMessage(packed) for client in self.clients if client.role == "viewer"]
     
     def wsLoop(self,conn):
@@ -92,7 +88,11 @@ if __name__ == "__main__":
         if detector.startStream():
             while True:
                 color_frame, depth_frame = detector.getFrame()
-                backend.p[0].send(color_frame)
+                dist = rscam.getROIdist(depth_img,background = None,dist_only = True)
+                range_val = rscam.getRange(dist)
+                color_img = rscam.getROIRect(color_img,dist)
+                backend.p[0].send(color_img)
+                backend.p[0].send(range_val)
             print("Stream stopped")
         else:
             print("Error loading realsense")
@@ -102,11 +102,12 @@ if __name__ == "__main__":
 #    backend = Backend()
 #    if backend.online():
 #        while True:
+#            t0 = time.time()
 #            ready, test = cam.read()
 #            if ready:
-#                frame = cv2.cvtColor(test, cv2.COLOR_RGB2RGBA)
 #                dummyRange = random.choice([0,1,2])
-#                backend.p[0].send(frame)
+#                backend.p[0].send(test)
 #                backend.p[0].send(dummyRange)
+#                print((time.time()-t0))
                 
    

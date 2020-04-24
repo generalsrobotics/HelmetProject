@@ -88,9 +88,9 @@ if __name__ == "__main__":
         if detector.startStream():
             while True:
                 color_frame, depth_frame = detector.getFrame()
-                dist = rscam.getROIdist(depth_img,background = None,dist_only = True)
-                range_val = rscam.getRange(dist)
-                color_img = rscam.getROIRect(color_img,dist)
+                dist = detector.getROIdist(depth_img,background = None,dist_only = True)
+                range_val = detector.getRange(dist)
+                color_img = detector.getROIRect(color_img,dist)
                 backend.p[0].send(color_img)
                 backend.p[0].send(range_val)
             print("Stream stopped")

@@ -29,84 +29,17 @@ left:0;
 <body>
 
 <image id="video-feed">Video Feed Unavailable</image>
-<div id="map"></div>
 
 <script type = "text/javascript">
-var map, pos,marker;
-
-
-function initMap() {
-map = new google.maps.Map(document.getElementById('map'), {
-center: {lat: 40.838216, lng: -73.938533},
-zoom: 18
-});
-if (navigator.geolocation) {
-navigator.geolocation.getCurrentPosition(function(position) {
-pos = {
-lat: position.coords.latitude,
-lng: position.coords.longitude
-};
-map.setCenter(pos);
-marker = new google.maps.Marker({
-    position: pos
-});
-
-// To add the marker to the map, call setMap();
-marker.setMap(map);
-
-}, function() {
-handleLocationError(true, infoWindow, map.getCenter());
-});
-} else {
-// Browser doesn't support Geolocation
-handleLocationError(false, infoWindow, map.getCenter());
-}
-setInterval(updateMap,3000);
-}
-
-
-
-
-function handleLocationError(browserHasGeolocation, infoWindow, pos) {
-infoWindow.setPosition(pos);
-infoWindow.setContent(browserHasGeolocation ?
-'Error: The Geolocation service failed.' :
-'Error: Your browser doesn\'t support geolocation.');
-infoWindow.open(map);
-}
-
-function updateMap() {
-if (navigator.geolocation) {
-navigator.geolocation.getCurrentPosition(function(position) {
-var pos = {
-lat: position.coords.latitude,
-lng: position.coords.longitude
-};
-map.setCenter(pos);
-marker.setPosition(pos);
-
-// To add the marker to the map, call setMap();
-marker.setMap(map);
-
-}, function() {
-handleLocationError(true, infoWindow, map.getCenter());
-});
-} else {
-// Browser doesn't support Geolocation
-handleLocationError(false, infoWindow, map.getCenter());
-}
-}
 
 var feed = document.getElementById("video-feed");
 
 if ("WebSocket" in window) {
-
 var ws = new WebSocket("ws://"+window.location.hostname+":9001");
 ws.binaryType = "arraybuffer";
 ws.onopen = function() {
 ws.send(JSON.stringify({role:"viewer"}));
 feed.addEventListener('click', function (event) {
-
 if (document.fullscreenElement) {
 document.exitFullscreen();
 } else {
@@ -124,19 +57,12 @@ var blob  = new Blob([new Uint8Array(arrayBuffer)], {type: "image/jpeg"});
 feed.src = window.URL.createObjectURL(blob);
 };
 
-ws.onclose = function() {
-
-
-};
+ws.onclose = function() {};
 } else {
 
 // The browser doesn't support WebSocket
 alert("WebSocket NOT supported by your Browser!");
 }
 </script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDB80Ww9W35kESZNj6FgCwBwlPQmlfpI9A&callback=initMap"
-async defer></script>
-<script src="https://www.google.com/maps/@?api=1&map_action=map"
-async defer></script>
 </body>
 </html>

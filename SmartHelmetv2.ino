@@ -4,7 +4,7 @@
 void setup () {
  
   Serial.begin(115200);
-  WiFi.begin("Montilla Y Rodriguez", "montilla123");
+  WiFi.begin("ssid", "Password");
   pinMode(BUZZERL, OUTPUT);
  
   while (WiFi.status() != WL_CONNECTED) {

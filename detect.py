@@ -9,9 +9,9 @@ class Detector:
         self.width = w
         self.height = h
         self.fps = fps
-        #self.config.enable_stream(rs.stream.depth, self.width, self.height, rs.format.z16, fps)
-        #self.config.enable_stream(rs.stream.color, self.width, self.height, rs.format.bgr8, fps)
-        self.config.enable_device_from_file("EC_Recording3.bag")
+        self.config.enable_stream(rs.stream.depth, self.width, self.height, rs.format.z16, fps)
+        self.config.enable_stream(rs.stream.color, self.width, self.height, rs.format.bgr8, fps)
+        #self.config.enable_device_from_file("EC_Recording3.bag")
         self.profile = None
         self.depth_scale = None
         self.roi_width = 64

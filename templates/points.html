@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>three.js - kinect</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	<link type="text/css" rel="stylesheet" href="main.css">
+</head>
+
+<body>
+
+	<script src="../static/js/three.js"></script>
+	<script src="../static/js/OrbitControls.js"></script>
+	<script id="vs" type="x-shader/x-vertex">
+
+		uniform sampler2D map;
+
+		uniform float width;
+		uniform float height;
+
+		uniform float pointSize;
+		uniform float zOffset;
+
+		varying vec2 vUv;
+
+		const float XtoZ = 1.11146; // tan( 1.0144686 / 2.0 ) * 2.0;
+		const float YtoZ = 0.83359; // tan( 0.7898090 / 2.0 ) * 2.0;
+
+		void main() {
+
+			vUv = vec2(position.x / width, position.y / height);
+
+			vec4 color = texture2D(map, vUv);
+			float depth = (color.r + color.g + color.b) / 3.0;
+
+			// Projection code by @kcmic
+
+
+			vec4 pos = vec4(position.x,position.y,depth*zOffset,1.0);
+
+			gl_PointSize = pointSize;
+			gl_Position = projectionMatrix * modelViewMatrix * pos;
+
+		}
+	</script>
+
+	<script id="fs" type="x-shader/x-fragment">
+
+		uniform sampler2D rgb;
+
+
+			varying vec2 vUv;
+
+			void main() {
+
+				vec4 color = texture2D( rgb, vUv );
+				gl_FragColor = vec4( color.r-(1.0-color.r), color.g+(0.33-color.g), 0.0, 0.5 );
+//gl_FragColor = vec4( color.r, color.g, color.b, 0.5 );
+			}
+
+		</script>
+
+	<script>
+		var container;
+
+		var scene, camera, renderer;
+		var geometry, mesh, material, texture, rgb;
+
+		init();
+		animate();
+
+		function init() {
+
+			container = document.createElement('div');
+			document.body.appendChild(container);
+
+
+			camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 800);
+			camera.position.set(0, 0, 500);
+
+			scene = new THREE.Scene();
+			var width = 640,
+				height = 480;
+
+
+			geometry = new THREE.BufferGeometry();
+
+			var vertices = new Float32Array(width * height * 3);
+
+			for (var i = 0, j = 0, l = vertices.length; i < l; i += 3, j++) {
+
+				vertices[i] = j % width;
+				vertices[i + 1] = Math.floor(j / width);
+
+			}
+
+			geometry.addAttribute('position', new THREE.BufferAttribute(vertices, 3));
+
+
+
+
+
+
+			texture = new THREE.TextureLoader().load("/depth_feed");
+			rgb = new THREE.TextureLoader().load("/video_feed");
+			texture.minFilter = THREE.NearestFilter;
+
+			material = new THREE.ShaderMaterial({
+
+				uniforms: {
+					"rgb": {
+						value: texture
+					},
+					"map": {
+						value: texture
+					},
+					"width": {
+						value: width
+					},
+					"height": {
+						value: height
+					},
+					"pointSize": {
+						value: 2
+					},
+					"zOffset": {
+						value: 512
+					}
+
+				},
+				vertexShader: document.getElementById('vs').textContent,
+				fragmentShader: document.getElementById('fs').textContent,
+				blending: THREE.AdditiveBlending,
+				depthTest: false,
+				depthWrite: false,
+				transparent: true
+
+			});
+			mesh = new THREE.Points(geometry, material);
+			scene.add(mesh);
+			mesh.position.x -= 320;
+			mesh.position.y -= 240;
+
+
+
+
+
+
+
+
+			renderer = new THREE.WebGLRenderer();
+			renderer.setPixelRatio(window.devicePixelRatio);
+			renderer.setSize(window.innerWidth, window.innerHeight);
+			container.appendChild(renderer.domElement);
+			camera.position.set(0, 0, 1000);
+
+			controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+			//
+			window.addEventListener('resize', onWindowResize, false);
+
+		}
+
+		function onWindowResize() {
+
+			camera.aspect = window.innerWidth / window.innerHeight;
+			camera.updateProjectionMatrix();
+
+			renderer.setSize(window.innerWidth, window.innerHeight);
+
+		}
+
+
+
+		function animate() {
+
+			requestAnimationFrame(animate);
+
+			render();
+
+		}
+
+		function render() {
+
+
+			texture.needsUpdate = true;
+			rgb.needsUpdate = true;
+			controls.update();
+			renderer.render(scene, camera);
+
+		}
+	</script>
+</body>
+
+</html>

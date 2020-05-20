@@ -1,7 +1,6 @@
 from websocket_server import WebsocketServer
-
 from threading import Thread
-
+from multiprocessing import Process
 
 import time
 import cv2
@@ -40,7 +39,6 @@ def point_cloud():
 def update():
     now = datetime.datetime.now()
     T = now.strftime("%H:%M:%S")
-    updateReadings()
     return render_template('update.html', suggestions = dist or -1)
 
 
@@ -49,8 +47,18 @@ def color(num):
     return col[num]
 
 def updateReadings():
-    color_frame, depth_frame = detector.getFrame()
-    dist = detector.getROIdist(depth_frame,background = None, dist_only = True)
+    global detector
+    global color_frame
+    global depth_frame
+    global gray_frame
+    global dist
+    global zone
+    detector = Detector()
+    detector.startStream()
+    while True:
+        color_frame, depth_frame, gray_frame = detector.getFrame()
+        dist = detector.getROIdist(depth_frame,background = None, dist_only = True)
+        zone = detector.getRange(dist)
 
 def gen():
     global dist
@@ -91,24 +99,8 @@ def depth_feed():
 
 
 class Backend:
-    def __init__(self,wsPort=8000,httpPort=5000):
-        self.clients = []
-        self.wsServer = WebsocketServer(wsPort,host="0.0.0.0")
-        self.httpServer = app
-
-
-    def runHTTP(self):
-        self.httpServer.run(host='0.0.0.0',threaded=True)
-        
-    def online(self):
-        try:
-            Thread(target=self.notifyHelmet,daemon=True).start()
-            Thread(target=self.runHTTP,daemon=True).start()
-            print("Backend Online")
-            return True
-        except Exception as e:
-            print(e)
-            return False
+    def __init__(self,port=8000):
+        self.wsServer = WebsocketServer(port,host="0.0.0.0")
 
     def notifyHelmet(self):
         Thread(target=self.wsServer.serve_forever,daemon=True).start()
@@ -116,25 +108,13 @@ class Backend:
             self.wsServer.send_message_to_all(str(zone))
             time.sleep(0.3)
 
-              
-
 
 
 
 if __name__ == "__main__":
-    detector = Detector()
     backend = Backend()
-    if backend.online():
-        if detector.startStream():
-            while True:
-                color_frame, depth_frame,gray_frame = detector.getFrame()
-                dist = detector.getROIdist(depth_frame,background = None, dist_only = True)
-                
-                zone = detector.getRange(dist)
-
-            print("Stream stopped")
-        else:
-            print("Error loading realsense")
-    else:
-        print("Error loading Backend")
-
+    Thread(target=updateReadings,daemon=True).start()
+    Thread(target=backend.notifyHelmet,daemon=True).start()
+    app.run(host='0.0.0.0',threaded=True)
+    
+   

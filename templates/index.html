@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<title>SmartHelmet</title>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js" integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew==" crossorigin=""></script>
+<style>
+header {
+text-align: center;
+background: skyblue;
+color: white;
+font-size:48px;
+font-family: "Arial Black", Gadget, sans-serif;
+
+}
+  #map {
+    width: 1280px;
+    height: 960px;
+    text-align: center;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 1%;
+
+    float: down;
+
+  }
+
+  #display {
+    width: 1280px;
+    height: 960px;
+    text-align: center;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 1%;
+
+    float: down;
+
+  }
+
+  .icon-bar {
+    width: 100%;
+    background-color: skyblue;
+    overflow: auto;
+    position: fixed;
+    bottom: 0;
+    text-align: center;
+    z-index: 1000;
+  }
+
+  .icon-bar i {
+    float: left;
+    width: 20%;
+    text-align: center;
+    padding: 12px 0;
+    transition: all 0.3s ease;
+    color: white;
+    font-size: 36px;
+  }
+
+  .icon-bar i:hover {
+    background-color: blue;
+  }
+
+  .active {
+    background-color: blue;
+  }
+</style>
+
+<body>
+<header>SmartHelmet</header>
+  <img id="display" src="/video_feed"></img>
+  <div id="map"> </div>
+  <footer>
+  <div class="icon-bar">
+    <i id="map_icon" class="fa fa-map"></i></a>
+    <i id="video" class="fa fa-video-camera"></i>
+    <i id="light" class="fa fa-lightbulb-o"></i>
+    <i id="points" class="fa fa-braille"></i>
+    <i id="misc" class="fa fa-trash"></i>
+  </div>
+</footer>
+
+
+
+  <script>
+    var display = document.getElementById('display');
+    var col=["#00ff00","#ffff00","#ff0000"];
+    var ws = new WebSocket("ws://"+window.location.hostname+":8000");
+    ws.onmessage = function(evt)
+    {
+      var range = evt.data;
+      document.body.style.background = col[range];
+    };
+    var map = L.map("map").setView([51.505, -0.09], 13);
+    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+      maxZoom: 18,
+      id: 'mapbox/streets-v11',
+      tileSize: 512,
+      zoomOffset: -1
+    }).addTo(map);
+
+    function onLocationFound(e) {
+      var radius = e.accuracy / 2;
+
+      L.marker(e.latlng).addTo(map)
+        .bindPopup("You are within " + radius + " meters from this point").openPopup();
+
+      L.circle(e.latlng, radius).addTo(map);
+    }
+
+    function onLocationError(e) {
+
+    }
+
+    map.on('locationfound', onLocationFound);
+    map.on('locationerror', onLocationError);
+
+    map.locate({
+      setView: true,
+      maxZoom: 16
+    });
+
+    var toggle_rgb = true;
+    var toggle_map = true;
+    var toggle_display = true;
+
+    document.getElementById('map_icon').onclick = function() {
+      toggle_map = !toggle_map;
+      var m = document.getElementById('map');
+      if (toggle_map) {
+        m.style.display = 'block';
+      } else {
+        m.style.display = 'none';;
+      }
+
+    };
+    document.getElementById('video').onclick = function() {
+      toggle_display = !toggle_display;
+
+      if (toggle_display) {
+        display.style.display = 'block';
+      } else {
+        display.style.display = 'none';
+      }
+
+    };
+    document.getElementById('light').onclick = function() {
+      toggle_rgb = !toggle_rgb;
+      if (toggle_rgb) {
+        display.src = '/video_feed';
+      } else {
+        display.src = '/depth_feed';
+      }
+
+    };
+
+    document.getElementById('points').onclick = function() {
+      window.location = "/point_cloud";
+
+    };
+    document.getElementById('misc').onclick = function() {
+      console.log('click');
+    };
+  </script>
+</body>
+
+</html>

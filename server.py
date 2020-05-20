@@ -27,7 +27,7 @@ def index():
     """Video streaming home page."""
     now = datetime.datetime.now()
     print (now.strftime("%Y-%m-%d %H:%M:%S"))
-    return render_template('index.html', value=color(zone))
+    return render_template('index.html')
 
 @app.route('/point_cloud')
 def point_cloud():
@@ -35,11 +35,6 @@ def point_cloud():
     print (now.strftime("%Y-%m-%d %H:%M:%S"))
     return render_template('points.html')
 
-@app.route('/update')
-def update():
-    now = datetime.datetime.now()
-    T = now.strftime("%H:%M:%S")
-    return render_template('update.html', suggestions = dist or -1)
 
 
 def color(num):

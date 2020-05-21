@@ -27,13 +27,13 @@ def index():
     """Video streaming home page."""
     now = datetime.datetime.now()
     print (now.strftime("%Y-%m-%d %H:%M:%S"))
-    return render_template('index.html')
+    return render_template('template.html',js="../static/js/2D.js")
 
 @app.route('/point_cloud')
 def point_cloud():
     now = datetime.datetime.now()
     print (now.strftime("%Y-%m-%d %H:%M:%S"))
-    return render_template('points.html')
+    return render_template('template.html',js="../static/js/3D.js")
 
 
 

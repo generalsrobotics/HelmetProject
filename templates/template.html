@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<title>SmartHelmet</title>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js" integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew==" crossorigin=""></script>
+<style>
+  header {
+    text-align: center;
+    background: skyblue;
+    color: white;
+    font-size: 48px;
+    font-family: "Arial Black", Gadget, sans-serif;
+    width: 100vw;
+    position: fixed;
+    top: 0;
+    z-index: 1000;
+
+
+  }
+
+  footer {
+    text-align: center;
+    background: skyblue;
+    color: white;
+    font-size: 48px;
+    font-family: "Arial Black", Gadget, sans-serif;
+    width: 100vw;
+    position: fixed;
+    bottom: 0;
+    z-index: 1000;
+
+  }
+
+  #map {
+    width: 80vw;
+    height: 80vh;
+    text-align: center;
+    display: block;
+    margin: auto;
+    margin-top: 5%;
+
+    float: down;
+
+  }
+
+  #feed,canvas {
+    width: 80vw;
+    height: 80vh;
+
+    float: down;
+
+  }
+  #display {
+    margin-top: 5%;
+    text-align: center;
+    display: block;
+    z-index: 1000;
+
+
+  }
+
+  .icon-bar {
+    width: 100%;
+    background-color: skyblue;
+    overflow: auto;
+    text-align: center;
+
+  }
+
+  .icon-bar i {
+    float: left;
+    width: 20%;
+    text-align: center;
+    padding: 12px 0;
+    transition: all 0.3s ease;
+    color: white;
+    font-size: 36px;
+  }
+
+  .icon-bar i:hover {
+    background-color: blue;
+  }
+
+  .active {
+    background-color: blue;
+  }
+</style>
+<header>SmartHelmet</header>
+
+<body>
+
+  <div id="display"></div>
+  <div id="map"> </div>
+
+
+</body>
+<footer>
+  <div class="icon-bar">
+    <i id="map_icon" class="fa fa-map"></i></a>
+    <i id="video" class="fa fa-video-camera"></i>
+    <i id="light" class="fa fa-lightbulb-o"></i>
+    <i id="points" class="fa fa-braille"></i>
+    <i id="misc" class="fa fa-television"></i>
+  </div>
+</footer>
+<script src="../static/js/default.js"></script>
+<script src="../static/js/three.js"></script>
+<script src="../static/js/OrbitControls.js"></script>
+<script id="vs" type="x-shader/x-vertex">
+
+  uniform sampler2D map;
+
+  uniform float width;
+  uniform float height;
+
+  uniform float pointSize;
+  uniform float zOffset;
+
+  varying vec2 vUv;
+
+  const float XtoZ = 1.11146; // tan( 1.0144686 / 2.0 ) * 2.0;
+  const float YtoZ = 0.83359; // tan( 0.7898090 / 2.0 ) * 2.0;
+
+  void main() {
+
+    vUv = vec2(position.x / width, position.y / height);
+
+    vec4 color = texture2D(map, vUv);
+    float depth = (color.r + color.g + color.b) / 3.0;
+
+    // Projection code by @kcmic
+
+
+    vec4 pos = vec4(position.x,position.y,depth*zOffset,1.0);
+
+    gl_PointSize = pointSize;
+    gl_Position = projectionMatrix * modelViewMatrix * pos;
+
+  }
+</script>
+
+<script id="fs" type="x-shader/x-fragment">
+  uniform sampler2D map;
+  uniform sampler2D rgb;
+  uniform bool render_rgb;
+
+    varying vec2 vUv;
+
+    void main() {
+
+      vec4 color = texture2D( rgb, vUv );
+      vec4 color2 = texture2D( map, vUv );
+      float avg = (color2.r+ color2.g+ color2.b)/3.0;
+      if (render_rgb) {
+        gl_FragColor = vec4( color.r, color.g, color.b, avg );
+      } else {
+      gl_FragColor = vec4( color.r-(1.0-color.r), color.g+(0.33-color.g), 0.0, avg );
+    }
+
+    }
+
+  </script>
+<script src="{{js}}"></script>
+</html>

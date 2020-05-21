@@ -1,15 +1,11 @@
 from websocket_server import WebsocketServer
 from threading import Thread
 from multiprocessing import Process
-
 import time
 import cv2
 import numpy as np
-from flask import Flask, render_template, Response
-
-
+from flask import Flask, render_template, Response, jsonify
 from detect import Detector
-import datetime
 
 app = Flask(__name__)
 dist = 0
@@ -24,22 +20,16 @@ print("Starting Server")
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 @app.route('/')
 def index():
-    """Video streaming home page."""
-    now = datetime.datetime.now()
-    print (now.strftime("%Y-%m-%d %H:%M:%S"))
     return render_template('template.html',js="../static/js/2D.js")
 
 @app.route('/point_cloud')
 def point_cloud():
-    now = datetime.datetime.now()
-    print (now.strftime("%Y-%m-%d %H:%M:%S"))
     return render_template('template.html',js="../static/js/3D.js")
 
+@app.route('/info')
+def info():
+    return jsonify(distance=dist,zone=zone)
 
-
-def color(num):
-    col=["#ff0000","#ffff00","#00ff00"]
-    return col[num]
 
 def updateReadings():
     global detector

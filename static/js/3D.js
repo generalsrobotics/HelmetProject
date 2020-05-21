@@ -1,8 +1,7 @@
-
 var scene, camera, renderer;
 var geometry, mesh, material, texture, rgb;
-var Wwidth = window.innerWidth*0.8;
-var Wheight = window.innerHeight*0.8;
+var Wwidth = window.innerWidth * 0.8;
+var Wheight = window.innerHeight * 0.8;
 
 init();
 animate();

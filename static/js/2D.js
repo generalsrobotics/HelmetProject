@@ -1,6 +1,6 @@
 var img = document.createElement('img');
 img.id = "feed";
-img.src= "/video_feed";
+img.src = "/video_feed";
 display.appendChild(img);
 var toggle_rgb = true;
 document.getElementById('video').onclick = function() {

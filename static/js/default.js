@@ -1,10 +1,26 @@
 var display = document.getElementById('display');
+var datetime = document.getElementById('datetime');
+datetime.innerText = new Date().toUTCString();
+var distance = document.getElementById('distance');
+var feet = -1;
+setInterval(function() {
+  var update = new XMLHttpRequest();
+  update.open("GET", '/info');
+  update.send();
+
+  update.onreadystatechange = (e) => {
+    var msg = JSON.parse(update.responseText);
+    distance.innerText = "Distance: " + msg.distance.toFixed(2) + "feet";
+    document.body.style.background = col[msg.zone];
+    distance.style.color = col[msg.zone];
+  }
+  datetime.innerText = new Date().toUTCString();
+
+}, 300);
+setInterval(function() {});
+
 var col = ["#00ff00", "#ffff00", "#ff0000"];
-var ws = new WebSocket("ws://" + window.location.hostname + ":8000");
-ws.onmessage = function(evt) {
-  var range = evt.data;
-  document.body.style.background = col[range];
-};
+
 var map = L.map("map").setView([40.838381, -73.938525], 20);
 L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
   maxZoom: 18,

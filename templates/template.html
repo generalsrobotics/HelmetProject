@@ -9,23 +9,39 @@
 <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js" integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew==" crossorigin=""></script>
 <style>
   header {
-    text-align: center;
-    background: skyblue;
-    color: white;
-    font-size: 48px;
+    background: rgba(127, 127, 127, 0.5);
+
+    color: black;
     font-family: "Arial Black", Gadget, sans-serif;
     width: 100vw;
     position: fixed;
     top: 0;
     z-index: 1000;
+    text-align: center;
 
+
+  }
+
+  h {
+    float: left;
+    width: 33vw;
+    color: black;
+    font-size: 24px;
+
+
+  }
+
+  #name {
+    font-size: 48px;
 
   }
 
   footer {
     text-align: center;
-    background: skyblue;
-    color: white;
+    background: rgba(127, 127, 127, 0.5);
+    ;
+
+    color: black;
     font-size: 48px;
     font-family: "Arial Black", Gadget, sans-serif;
     width: 100vw;
@@ -47,13 +63,15 @@
 
   }
 
-  #feed,canvas {
+  #feed,
+  canvas {
     width: 80vw;
     height: 80vh;
 
     float: down;
 
   }
+
   #display {
     margin-top: 5%;
     text-align: center;
@@ -64,32 +82,36 @@
   }
 
   .icon-bar {
-    width: 100%;
-    background-color: skyblue;
+    width: 100vw;
     overflow: auto;
     text-align: center;
+
 
   }
 
   .icon-bar i {
     float: left;
-    width: 20%;
+    width: 20vw;
     text-align: center;
     padding: 12px 0;
     transition: all 0.3s ease;
-    color: white;
+    color: black;
     font-size: 36px;
   }
 
   .icon-bar i:hover {
-    background-color: blue;
+    background-color: gray;
   }
 
   .active {
-    background-color: blue;
+    background-color: gray;
   }
 </style>
-<header>SmartHelmet</header>
+<header>
+  <h id="datetime"></h>
+  <h id="name">SmartHelmet</h>
+  <h id="distance"></h>
+</header>
 
 <body>
 
@@ -165,4 +187,5 @@
 
   </script>
 <script src="{{js}}"></script>
+
 </html>

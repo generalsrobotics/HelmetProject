@@ -2,8 +2,8 @@ var scene, camera, renderer;
 var geometry, mesh, material, texture, rgb;
 var width = 640;
 var height = 480;
-var Wwidth = window.innerWidth * 0.8;
-var Wheight = ((window.innerWidth * 0.8) / width) * height;
+var Wheight = window.innerHeight * 0.8;
+var Wwidth = ((window.innerHeight * 0.8) / height) * width;
 
 init();
 animate();
@@ -101,9 +101,8 @@ function init() {
 }
 
 function onWindowResize() {
-  Wwidth = window.innerWidth * 0.8;
-  Wheight = ((window.innerWidth * 0.8) / width) * height;
-  camera.aspect = Wwidth / Wheight;
+  Wheight = window.innerHeight * 0.8;
+  Wwidth = ((window.innerHeight * 0.8) / height) * width;
   camera.updateProjectionMatrix();
 
   renderer.setSize(Wwidth, Wheight);

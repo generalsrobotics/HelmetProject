@@ -9,15 +9,17 @@
 <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js" integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew==" crossorigin=""></script>
 <style>
   header {
-    background: rgba(127, 127, 127, 0.5);
-
-    color: black;
-    font-family: "Arial Black", Gadget, sans-serif;
-    width: 100vw;
+    background: rgba(127, 127, 127, 0.75);
+    color: white;
+    font-family: "Arial white", Gadget, sans-serif;
+    width: 100%;
     position: fixed;
     top: 0;
     z-index: 1000;
     text-align: center;
+    font-size: 250%;
+    z-index: 1000;
+
 
 
   }
@@ -25,26 +27,26 @@
   h {
     float: left;
     width: 33vw;
-    color: black;
-    font-size: 24px;
+    color: white;
+    vertical-align: baseline;
+    font-size: 0.5em;
 
 
   }
 
-  #name {
-    font-size: 48px;
-
+  #logo {
+    font-size: 1em;
   }
 
   footer {
     text-align: center;
-    background: rgba(127, 127, 127, 0.5);
+    background: rgba(127, 127, 127, 0.75);
     ;
 
-    color: black;
+    color: white;
     font-size: 48px;
-    font-family: "Arial Black", Gadget, sans-serif;
-    width: 100vw;
+    font-family: "Arial white", Gadget, sans-serif;
+    width: 100%;
     position: fixed;
     bottom: 0;
     z-index: 1000;
@@ -57,7 +59,8 @@
     text-align: center;
     display: block;
     margin: auto;
-    margin-top: 5%;
+    margin-top: 6vh;
+    margin-bottom: 5vh;
 
     float: down;
 
@@ -66,8 +69,6 @@
   #feed,
   canvas {
     width: 80vw;
-    height: 80vh;
-
     float: down;
 
   }
@@ -95,7 +96,7 @@
     text-align: center;
     padding: 12px 0;
     transition: all 0.3s ease;
-    color: black;
+    color: white;
     font-size: 36px;
   }
 
@@ -109,7 +110,7 @@
 </style>
 <header>
   <h id="datetime"></h>
-  <h id="name">SmartHelmet</h>
+  <h id="logo">SmartHelmet</h>
   <h id="distance"></h>
 </header>
 

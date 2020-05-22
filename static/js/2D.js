@@ -2,7 +2,8 @@ var img = document.createElement('img');
 img.id = "feed";
 img.src = "/video_feed";
 display.appendChild(img);
-var toggle_rgb = true;
+var width = 640;
+var height = 480;
 document.getElementById('video').onclick = function() {
   toggle_display = !toggle_display;
 
@@ -27,3 +28,10 @@ document.getElementById('points').onclick = function() {
   window.location = "/point_cloud";
 
 };
+
+function onWindowResize() {
+  img.width = window.innerWidth * 0.8;
+  img.height = ((window.innerWidth * 0.8) / width) * height;
+
+
+}

@@ -1,7 +1,9 @@
 var scene, camera, renderer;
 var geometry, mesh, material, texture, rgb;
+var width = 640;
+var height = 480;
 var Wwidth = window.innerWidth * 0.8;
-var Wheight = window.innerHeight * 0.8;
+var Wheight = ((window.innerWidth * 0.8) / width) * height;
 
 init();
 animate();
@@ -12,8 +14,7 @@ function init() {
   camera.position.set(0, 0, 640);
 
   scene = new THREE.Scene();
-  var width = 640,
-    height = 480;
+
 
 
   geometry = new THREE.BufferGeometry();
@@ -100,7 +101,8 @@ function init() {
 }
 
 function onWindowResize() {
-
+  Wwidth = window.innerWidth * 0.8;
+  Wheight = ((window.innerWidth * 0.8) / width) * height;
   camera.aspect = Wwidth / Wheight;
   camera.updateProjectionMatrix();
 
@@ -135,7 +137,8 @@ document.getElementById('video').onclick = function() {
 
 };
 document.getElementById('light').onclick = function() {
-  if (material.uniforms.render_rgb.value) {
+  toggle_rgb = !toggle_rgb;
+  if (toggle_rgb) {
     material.uniforms.rgb.value = texture;
     material.uniforms.render_rgb.value = false;
   } else {

@@ -9,9 +9,9 @@ class Detector:
         self.width = w
         self.height = h
         self.fps = fps
-        self.config.enable_stream(rs.stream.depth, self.width, self.height, rs.format.z16, fps)
-        self.config.enable_stream(rs.stream.color, self.width, self.height, rs.format.bgr8, fps)
-        #self.config.enable_device_from_file("EC_Recording3.bag")
+        #self.config.enable_stream(rs.stream.depth, self.width, self.height, rs.format.z16, fps)
+        #self.config.enable_stream(rs.stream.color, self.width, self.height, rs.format.bgr8, fps)
+        self.config.enable_device_from_file("EC_Recording3.bag")
         self.profile = None
         self.depth_scale = None
         self.roi_width = 64
@@ -70,14 +70,13 @@ class Detector:
 
 
     def getRange(self,dist):
-        ''' r = 0 is no alarm. r = 1 is soft alarm. if r = 2 object is too close'''
+        if (dist<=self.ranges[0]):
+            return 2
+        elif (dist<=self.ranges[1]):
+            return 1
+        else:
+            return 0
 
-        r = 0
-        if dist <= self.ranges[0]:
-            r = 2
-        elif dist <= self.ranges[1]:
-            r = 1
-        return r
 
 
     def getROIdist(self,img,background = None,dist_only = False):

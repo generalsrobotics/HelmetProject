@@ -1,6 +1,6 @@
 var display = document.getElementById('display');
 var datetime = document.getElementById('datetime');
-datetime.innerText = new Date().toUTCString();
+datetime.innerText = new Date().toLocaleString();
 var distance = document.getElementById('distance');
 var logo = document.getElementById('logo');
 var feet = -1;
@@ -32,7 +32,7 @@ setInterval(function() {
 
       update.onreadystatechange = (e) => {
         var msg = JSON.parse(update.responseText);
-        distance.innerText = "Distance: " + msg.distance.toFixed(2) + "feet";
+        distance.innerText = "Distance: " + msg.distance.toFixed(2) + " feet";
         document.body.style.background = col[msg.zone];
         window.navigator.vibrate([msg.zone * 300, msg.zone * 300]);
           if (demo) {

@@ -2,8 +2,8 @@ var scene, camera, renderer;
 var geometry, mesh, material, texture, rgb;
 var width = 640;
 var height = 480;
-var Wheight = window.innerHeight * 0.8;
-var Wwidth = ((window.innerHeight * 0.8) / height) * width;
+var Wwidth = display.clientWidth;
+var Wheight = display.clientHeight;
 
 init();
 animate();
@@ -11,7 +11,7 @@ animate();
 function init() {
 
   camera = new THREE.PerspectiveCamera(50, Wwidth / Wheight, 1, 1000);
-  camera.position.set(0, 0, 640);
+
 
   scene = new THREE.Scene();
 
@@ -78,7 +78,7 @@ function init() {
   scene.add(mesh);
   mesh.position.x -= 320;
   mesh.position.y -= 240;
-
+  camera.position.set(0, 0, 960);
 
 
 
@@ -90,9 +90,10 @@ function init() {
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(Wwidth, Wheight);
   display.appendChild(renderer.domElement);
-  camera.position.set(0, 0, 1000);
+
 
   controls = new THREE.OrbitControls(camera, renderer.domElement);
+renderer.domElement.id = "feed";
 
 
   //
@@ -101,8 +102,8 @@ function init() {
 }
 
 function onWindowResize() {
-  Wheight = window.innerHeight * 0.8;
-  Wwidth = ((window.innerHeight * 0.8) / height) * width;
+  Wwidth = display.clientWidth;
+  Wheight = display.clientHeight;
   camera.updateProjectionMatrix();
 
   renderer.setSize(Wwidth, Wheight);

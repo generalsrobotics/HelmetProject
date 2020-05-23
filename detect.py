@@ -9,14 +9,14 @@ class Detector:
         self.width = w
         self.height = h
         self.fps = fps
-        self.config.enable_stream(rs.stream.depth, self.width, self.height, rs.format.z16, fps)
-        self.config.enable_stream(rs.stream.color, self.width, self.height, rs.format.bgr8, fps)
-        #self.config.enable_device_from_file("EC_Recording3.bag")
+        #self.config.enable_stream(rs.stream.depth, self.width, self.height, rs.format.z16, fps)
+        #self.config.enable_stream(rs.stream.color, self.width, self.height, rs.format.bgr8, fps)
+        self.config.enable_device_from_file("EC_Recording3.bag")
         self.profile = None
         self.depth_scale = None
         self.roi_width = 64
         self.roi_height = 64
-        self.ranges = [10,7,5]
+        self.ranges = [1,3,6]
         self.rect_color = (0,255,0)     #initialize to green
         self.colorizer = rs.colorizer()
         self.colorizer.set_option(rs.option.color_scheme, 2)
@@ -54,18 +54,14 @@ class Detector:
 
 
     def getROIRect(self,img,dist):
-        '''this method now expects a color image to superimpose the rectange on it'''
-        #I modified this method to return the overlay rectangle only and not the mean of the ROI. I am getting the ROI from the getROIdist method instead with appropriate scaling. EC (4/11/20)
+        colors = [(0,255,0),(0,255,255),(0,0,255)]
         y,x,c = img.shape
         startx = x//2 - self.roi_width//2
         starty = y//2 - self.roi_height//2
 
         roi = img[starty : starty + self.roi_height : 1, startx : startx + self.roi_width : 1]
 
-        if dist <= self.ranges[2]:
-            self.rect_color = (0,0,255)     #set rectangle to red if distance breaks threshold ??
-        else:
-            self.rect_color = (0,255,0)
+        self.rect_color = colors[self.getRange(dist)]
 
         out = cv2.rectangle(img, (startx,starty), (startx+self.roi_width,starty+self.roi_height),self.rect_color,1)
 
@@ -77,7 +73,7 @@ class Detector:
         ''' r = 0 is no alarm. r = 1 is soft alarm. if r = 2 object is too close'''
 
         r = 0
-        if dist <= self.ranges[2]:
+        if dist <= self.ranges[0]:
             r = 2
         elif dist <= self.ranges[1]:
             r = 1

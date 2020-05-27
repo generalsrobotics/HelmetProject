@@ -128,7 +128,7 @@ setInterval(function() {
       }
     };
 
-    document.getElementsByTagName('header')[0].onclick = function() {
+    document.getElementById('logo').onclick = function() {
       demo = !demo;
 
       if (demo) {
@@ -143,8 +143,8 @@ setInterval(function() {
       } else {
         clearInterval(rgbLooper);
         clearInterval(viewLooper);
-        logo.style.color = 'white';
-        datetime.style.color = 'white';
-        distance.style.color = 'white';
+        logo.style.color = 'black';
+        datetime.style.color = 'black';
+        distance.style.color = 'black';
       }
     };

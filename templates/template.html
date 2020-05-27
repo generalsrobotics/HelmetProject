@@ -4,6 +4,7 @@
 
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin="" />
 <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js" integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew==" crossorigin=""></script>
@@ -11,45 +12,51 @@
 html, body {
   height:100vh;
   width:100vw;
-  font-size: 2.5vw;
+  font-size: 2.75vw;
+  color: black;
+    font-family: 'VT323', monospace;
+
 }
-  header {
-    background: rgba(127, 127, 127, 0.75);
-    color: white;
-    font-family: "Arial white", Gadget, sans-serif;
-    width: 100vw;
-    position: fixed;
-    top: 0;
-    z-index: 1000;
-    text-align: center;
-    font-size: 1em;
-
-  }
-
-  h {
-    float: left;
-    width: 33%;
-    color: white;
-    vertical-align: baseline;
-
-
-
-  }
-
-  
-  footer {
-    text-align: center;
-    background: rgba(127, 127, 127, 0.75);
-    z-index: 1000;
-
-    color: white;
-    font-size: 2em;
-    font-family: "Arial white", Gadget, sans-serif;
+  #header {
+    background: rgb(173, 213, 231);
+        
     width: 100%;
-    position: fixed;
-    bottom: 0;
-
+    position: absolute;
+    top: 0;
+    left:0;
+    z-index: 1000;
+text-align: center;
   }
+
+  #header .h {
+    color: black;
+  }
+#datetime {
+  font-size: 0.5em;
+  float: left;
+
+}
+#title {
+  font-size: 0.75em;
+  text-align: center;
+
+
+
+}
+
+#distance {
+  float: down;
+  display: block;
+  width: 80%;
+    text-align: center;
+    margin:auto;
+    margin-top: 3%;
+
+    background: rgb(125, 171, 240);
+    font-size: 2em;
+
+}
+
 
   #map {
     height: 60%;
@@ -59,7 +66,7 @@ html, body {
     margin:auto;
     float: down;
     margin: auto;
-    margin-top: 4%;
+    margin-top: 3%;
     
   }
 
@@ -72,7 +79,7 @@ html, body {
     width:80%;
     height: 60%;
     margin: auto;
-    margin-top: 4%;
+    margin-top: 6%;
   }
 #feed {
     width: 100%;
@@ -84,17 +91,24 @@ html, body {
     width: 100%;
     overflow: auto;
     text-align: center;
+    position: fixed;
+    bottom: 0;
+    left:0;
+    z-index: 1000;
+    background: rgb(203, 218, 224);
+
 
 
   }
 
   .icon-bar i {
+
     float: left;
     width: 20%;
     text-align: center;
     padding: 12px 0;
     transition: all 0.3s ease;
-    color: white;
+    color: black;
     font-size: 1em;
   }
 
@@ -110,16 +124,15 @@ html, body {
 
 <body>
 
-  <header>
+  <div id="header">
     <h id="datetime"></h>
-    <h id="logo">SmartHelmet</h>
-    <h id="distance"></h>
-  </header>
+   <h id="logo">SmartHelmet</h>
+  </div>
 
   <div id="display"></div>
+  <h id="distance"></h>
   <div id="map"> </div>
 
-  <footer>
     <div class="icon-bar">
       <i id="map_icon" class="fa fa-map"></i></a>
       <i id="video" class="fa fa-video-camera"></i>
@@ -127,7 +140,6 @@ html, body {
       <i id="points" class="fa fa-braille"></i>
       <i id="misc" class="fa fa-television"></i>
     </div>
-  </footer>
 </body>
 
 <script src="../static/js/default.js"></script>
